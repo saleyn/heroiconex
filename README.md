@@ -27,7 +27,7 @@ Run `make rebuild`.  It will generate the `lib/*.ex` files using the
 ## Usage
 
 In your Phoenix project use the following tags, where `home` represents the home icon:
-```
+```html
 <Heroicons.Solid.home class="w-5 h-5"/>
 <Heroicons.Solid.home title="Some title" class="w-5 h-5"/>
 
