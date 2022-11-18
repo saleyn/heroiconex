@@ -16,7 +16,7 @@ defmodule Heroicons.Helpers.Svg do
       <%= if not is_nil(@title) do %>
         <title><%= @title %></title>
       <% end %>
-      <!-- <%= render_slot(@inner_block) %> -->
+      <!-- <= render_slot(@inner_block) > -->
       <%= @path %>
     </svg>
     """
