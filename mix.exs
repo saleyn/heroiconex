@@ -32,7 +32,7 @@ defmodule Mix.Tasks.Compile.Generate do
   use Mix.Task.Compiler
 
   @url "https://api.github.com/repos/tailwindlabs/heroicons/releases/latest"
-  @archive '/tmp/heroicons.tgz'
+  @archive "/tmp/heroicons.tgz"
 
   @impl true
   def run(_args) do
@@ -47,7 +47,7 @@ defmodule Mix.Tasks.Compile.Generate do
       vsn    = Regex.replace(~r|.*/v([\d\.]+)$|, zipurl, "\\1")
       IO.puts("URL: #{zipurl}")
       {:ok, :saved_to_file} = SimpleHttp.get(zipurl, [ssl: [verify: :verify_none], headers: %{"User-Agent" => "Mozilla"}, stream: @archive])
-      {:ok, data} = :erl_tar.extract(@archive, [:compressed, :memory])
+      {:ok, data} = :erl_tar.extract(@archive |> to_charlist, [:compressed, :memory])
 
       file_icons =
         Enum.reduce(data, [], fn {file, svgbin}, acc ->
@@ -89,7 +89,7 @@ defmodule Mix.Tasks.Compile.Generate do
         [{_, _}] = Code.compile_file(dst)
         IO.puts("Generated #{dst}")
       end
-      @archive |> to_string() |> File.rm()
+      File.rm(@archive)
       src_file       = File.read!("mix.exs")
       [{pos,   len}] = Regex.run(~r|\n\s+version: +"([^"]+)",\s*\n.*|,  src_file, [capture: :all_but_first, return: :index])
       {start,  bend} = String.split_at(src_file, pos)
