@@ -70,7 +70,7 @@ defmodule Mix.Tasks.Compile.Generate do
             """
               @doc "Renders the `#{name}` icon"
               def #{String.replace(name, "-", "_")}(assigns), do:
-                Map.put(assigns, :inner_block, ["#{String.replace(content, "\"", "\\\"")}"])
+                Map.put(assigns, :path, "#{String.replace(content, "\"", "\\\"")}")
                 |> Svg.icon()
             """
           end
