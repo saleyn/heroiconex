@@ -1,6 +1,7 @@
 # Heroicons for Elixir
 
-This project generates solid, outline, and mini SVG icons from the Heroicons repository.
+This project generates solid, outline, and mini SVG icons from the
+[Heroicons](https://heroicons.com/) repository.
 
 ## Author
 

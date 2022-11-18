@@ -1,4 +1,4 @@
-defmodule HeroiconsCodegen.MixProject do
+defmodule Heroiconex.MixProject do
   use Mix.Project
 
   def project do
@@ -68,7 +68,7 @@ defmodule Mix.Tasks.Compile.Generate do
         text =
           for {name, content} <- icons do
             """
-              @doc "Returns an `#{name}` icon"
+              @doc "Renders the `#{name}` icon"
               def #{String.replace(name, "-", "_")}(assigns), do:
                 Map.put(assigns, :inner_block, ["#{String.replace(content, "\"", "\\\"")}"])
                 |> Svg.icon()
