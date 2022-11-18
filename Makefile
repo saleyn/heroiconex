@@ -1,9 +1,9 @@
 all: compile
 
-deps:
-	mix $@.get
+update deps:
+	mix deps.get
 
-compile:
+compile: deps
 	mix $@
 
 run:
@@ -15,6 +15,9 @@ test:
 rebuild: clean compile
 
 clean:
-	rm -fr lib/{solid,outline,mini}.ex _build/lib/heroicons_codegen
+	rm -fr lib/{solid,outline,mini}.ex _build/lib/heroiconex
 
-.PHONY: deps compile test
+distclean: clean
+	rm -fr _build deps
+
+.PHONY: update compile test

@@ -3,7 +3,7 @@ defmodule HeroiconsCodegen.MixProject do
 
   def project do
     [
-      app:             :heroicons_codegen,
+      app:             :heroiconex,
       version:         "0.1.0",
       elixir:          "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -14,29 +14,23 @@ defmodule HeroiconsCodegen.MixProject do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    [
-      extra_applications: [:logger]
-    ]
+    []
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix,           "~> 1.7.0-rc.0", override: true},
-      {:phoenix_html,      "~> 3.0"},
       {:phoenix_live_view, "~> 0.18.3"},
-      {:floki,             "~> 0.34"},
-      {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git"},
-      {:jason,             "~> 1.4"},
+      {:floki,             "~> 0.34",                                  runtime: false, only: [:dev, :test]},
+      {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git", runtime: false, only: [:dev, :test]},
+      {:jason,             "~> 1.4",                                   funtime: false, only: [:dev, :test]},
     ]
   end
 end
 
-
 defmodule Mix.Tasks.Compile.Generate do
   use Mix.Task.Compiler
 
-  #@url "https://github.com/tailwindlabs/heroicons.git"
   @url "https://api.github.com/repos/tailwindlabs/heroicons/releases/latest"
   @archive '/tmp/heroicons.tgz'
 
@@ -44,7 +38,9 @@ defmodule Mix.Tasks.Compile.Generate do
   def run(_args) do
     target_files = for s <- ["solid", "outline", "mini"], dst = "lib/#{s}.ex", not File.exists?(dst), do: s
 
-    if target_files != [] do
+    if target_files == [] do
+      :noop
+    else
       IO.puts("Downloading heroicons")
       {:ok, release} = SimpleHttp.get(@url, [ssl: [verify: :verify_none], headers: %{"User-Agent" => "Mozilla"}])
       zipurl = Jason.decode!(release.body)["tarball_url"]
@@ -92,7 +88,8 @@ defmodule Mix.Tasks.Compile.Generate do
         [{_, _}] = Code.compile_file(dst)
         IO.puts("Generated #{dst}")
       end
+      @archive |> to_string() |> File.rm()
+      :ok
     end
-    @archive |> to_string() |> File.rm()
   end
 end
