@@ -14,7 +14,7 @@ by adding `heroiconex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:heroiconex, "~> 0.1.0"}
+    {:heroiconex, "~> 2.0"}
   ]
 end
 ```

@@ -44,6 +44,7 @@ defmodule Mix.Tasks.Compile.Generate do
       IO.puts("Downloading heroicons")
       {:ok, release} = SimpleHttp.get(@url, [ssl: [verify: :verify_none], headers: %{"User-Agent" => "Mozilla"}])
       zipurl = Jason.decode!(release.body)["tarball_url"]
+      vsn    = Regex.replace(~r|.*/v([\d\.]+)$|, zipurl, "\\1")
       IO.puts("URL: #{zipurl}")
       {:ok, :saved_to_file} = SimpleHttp.get(zipurl, [ssl: [verify: :verify_none], headers: %{"User-Agent" => "Mozilla"}, stream: @archive])
       {:ok, data} = :erl_tar.extract(@archive, [:compressed, :memory])
@@ -89,6 +90,15 @@ defmodule Mix.Tasks.Compile.Generate do
         IO.puts("Generated #{dst}")
       end
       @archive |> to_string() |> File.rm()
+      src_file       = File.read!("mix.exs")
+      [{pos,   len}] = Regex.run(~r|\n\s+version: +"([^"]+)",\s*\n.*|,  src_file, [capture: :all_but_first, return: :index])
+      {start,  bend} = String.split_at(src_file, pos)
+      {old_vsn,bend} = String.split_at(bend,     len)
+
+      if old_vsn != vsn do
+        IO.puts("Changing version: #{old_vsn} -> #{vsn}")
+        :ok  = File.write("mix.exs", [start, vsn, bend])
+      end
       :ok
     end
   end
