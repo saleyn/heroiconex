@@ -1,6 +1,6 @@
 # Heroicons for Elixir
 
-This project generates solid, outline, and mini SVG icons from the Heroicons repository
+This project generates solid, outline, and mini SVG icons from the Heroicons repository.
 
 ## Author
 
@@ -8,8 +8,7 @@ Serge Aleynikov
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `heroiconex` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `heroiconex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -18,6 +17,8 @@ def deps do
   ]
 end
 ```
+
+The project's version matches the version number of Heroicons.
 
 ## Updating to the latest Heroicons
 
