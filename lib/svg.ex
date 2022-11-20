@@ -6,7 +6,7 @@ defmodule Heroicons.Helpers.Svg do
 
   attr :title, :string, default: nil
   attr :class, :string, default: nil
-  attr :rest,  :global, default: %{class: "bg-blue-200"}, doc: "HTML attributes for the svg container", include: ~w(fill stroke stroke-width class)
+  attr :rest,  :global, doc: "HTML attributes for the svg container", include: ~w(fill stroke stroke-width class)
   attr :paths, :string, required: true
 
   def icon(assigns) do

@@ -35,7 +35,7 @@ defmodule Mix.Tasks.Compile.Generate do
   @archive "/tmp/heroicons.tgz"
 
   @impl true
-  def run(_args) do
+  def run(args) do
     target_files = for s <- ["solid", "outline", "mini"], dst = "lib/#{s}.ex", not File.exists?(dst), do: s
 
     if target_files == [] do
@@ -52,7 +52,7 @@ defmodule Mix.Tasks.Compile.Generate do
       build_files(data)
       replace_vsn(vsn)
 
-      File.rm(@archive)
+      :lists.member("--preserve", args) || File.rm(@archive)
     end
   end
 
