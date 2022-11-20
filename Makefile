@@ -12,7 +12,7 @@ run:
 test:
 	mix $@
 
-rebuild: clean compile
+generate: clean compile
 
 clean:
 	rm -fr lib/{solid,outline,mini}.ex _build/lib/heroiconex

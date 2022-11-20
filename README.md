@@ -23,7 +23,7 @@ The project's version matches the version number of Heroicons.
 
 ## Updating to the latest Heroicons
 
-Run `make rebuild`.  It will generate the `lib/*.ex` files using the
+Run `make generate`.  It will generate the `lib/*.ex` files using the
 [latest heroicon release](https://github.com/tailwindlabs/heroicons/releases/latest).
 
 ## Usage
