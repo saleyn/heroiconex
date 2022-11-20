@@ -21,9 +21,9 @@ defmodule Heroiconex.MixProject do
   defp deps do
     [
       {:phoenix_live_view, "~> 0.18.3"},
-      {:floki,             "~> 0.34",                                  runtime: false, only: [:dev, :test]},
-      {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git", runtime: false, only: [:dev, :test]},
-      {:jason,             "~> 1.4",                                   funtime: false, only: [:dev, :test]},
+      {:floki,             "~> 0.34",                                  runtime: false, only: :dev},
+      {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git", runtime: false, only: :dev},
+      {:jason,             "~> 1.4",                                   funtime: false, only: :dev},
     ]
   end
 end
@@ -49,57 +49,45 @@ defmodule Mix.Tasks.Compile.Generate do
       {:ok, :saved_to_file} = SimpleHttp.get(zipurl, [ssl: [verify: :verify_none], headers: %{"User-Agent" => "Mozilla"}, stream: @archive])
       {:ok, data} = :erl_tar.extract(@archive |> to_charlist, [:compressed, :memory])
 
-      file_icons =
-        Enum.reduce(data, [], fn {file, svgbin}, acc ->
-          case Regex.run(~r|[^/]+/optimized/(\d\d)/([^/]+)/(.*)\.svg|, List.to_string(file), [capture: :all_but_first]) do
-            nil ->
-              acc
-            [size, type, filename] ->
-              s = (size == "20" and type == "solid") && "mini" || type
-              content = Floki.parse_document!(svgbin) |> Floki.find("path") |> Floki.raw_html
-              name    = Path.basename(filename, ".svg")
-              [{s, name, content} | acc]
-          end
-        end)
-        |> Enum.reverse
-        |> Enum.group_by(fn {s, _, _} -> s end, fn {_, name, content} -> {name, content} end)
+      build_files(data)
+      replace_vsn(vsn)
 
-      for {type, icons} <- file_icons do
-        text =
-          for {name, content} <- icons do
-            """
-              @doc "Renders the `#{name}` icon"
-              def #{String.replace(name, "-", "_")}(assigns), do:
-                Map.put(assigns, :path, "#{String.replace(content, "\"", "\\\"")}")
-                |> Svg.icon()
-            """
-          end
-
-        text = Enum.join(text, "\n")
-        data =
-          """
-          defmodule Heroicons.#{String.capitalize(type)} do
-            alias Heroicons.Helpers.Svg
-
-          #{text}
-          end
-          """
-        dst = "lib/#{type}.ex"
-        :ok = File.write!(dst, data)
-        [{_, _}] = Code.compile_file(dst)
-        IO.puts("Generated #{dst}")
-      end
       File.rm(@archive)
-      src_file       = File.read!("mix.exs")
-      [{pos,   len}] = Regex.run(~r|\n\s+version: +"([^"]+)",\s*\n.*|,  src_file, [capture: :all_but_first, return: :index])
-      {start,  bend} = String.split_at(src_file, pos)
-      {old_vsn,bend} = String.split_at(bend,     len)
-
-      if old_vsn != vsn do
-        IO.puts("Changing version: #{old_vsn} -> #{vsn}")
-        :ok  = File.write("mix.exs", [start, vsn, bend])
-      end
-      :ok
     end
+  end
+
+  defp build_files(data) do
+    Enum.reduce(data, [], fn {file, svgbin}, acc ->
+      case Regex.run(~r|[^/]+/optimized/(\d\d)/([^/]+)/(.*)\.svg|, List.to_string(file), [capture: :all_but_first]) do
+        nil ->
+          acc
+        [size, type, filename] ->
+          s = (size == "20" and type == "solid") && "mini" || type
+          content = Floki.parse_document!(svgbin) |> Floki.find("path") |> Floki.raw_html
+          name    = Path.basename(filename, ".svg")
+          [{s, name, content} | acc]
+      end
+    end)
+    |> Enum.reverse
+    |> Enum.group_by(fn {s, _, _} -> s end, fn {_, name, content} -> {name, content} end)
+    |> Enum.each(fn {type, icons} ->
+      dst = "lib/#{type}.ex"
+      Mix.Generator.copy_template("templates/heroicons.exs", dst, %{type: type, icons: icons}, force: true)
+
+      [{_, _}] = Code.compile_file(dst)
+    end)
+  end
+
+  defp replace_vsn(vsn) do
+    src_file       = File.read!("mix.exs")
+    [{pos,   len}] = Regex.run(~r|\n\s+version: +"([^"]+)",\s*\n.*|, src_file, [capture: :all_but_first, return: :index])
+    {start,  bend} = String.split_at(src_file, pos)
+    {old_vsn,bend} = String.split_at(bend,     len)
+
+    if old_vsn != vsn do
+      IO.puts("Changing version: #{old_vsn} -> #{vsn}")
+      :ok  = File.write("mix.exs", [start, vsn, bend])
+    end
+    :ok
   end
 end

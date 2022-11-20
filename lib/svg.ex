@@ -6,9 +6,8 @@ defmodule Heroicons.Helpers.Svg do
 
   attr :title, :string, default: nil
   attr :class, :string, default: nil
-  attr :rest,  :global, default: %{class: "bg-blue-200"}
-  #slot :inner_block, required: true
-  attr :path, :string, required: true
+  attr :rest,  :global, default: %{class: "bg-blue-200"}, doc: "HTML attributes for the svg container", include: ~w(fill stroke stroke-width class)
+  attr :paths, :string, required: true
 
   def icon(assigns) do
     ~H"""
@@ -16,9 +15,9 @@ defmodule Heroicons.Helpers.Svg do
       <%= if not is_nil(@title) do %>
         <title><%= @title %></title>
       <% end %>
-      <!-- <= render_slot(@inner_block) > -->
-      <%= @path %>
+      <%= @paths %>
     </svg>
     """
+      #<%= render_slot(@inner_block) %>
   end
 end
