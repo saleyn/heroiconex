@@ -26,11 +26,10 @@ defmodule Heroicons.Outline do
 
   defp icon(assigns, content) do
     rest =
-    %{"aria-hidden": "true", fill: "none", viewBox: "0 0 24 24", "stroke-width": "1.5", stroke: "currentColor"}
+      %{"aria-hidden": "true", fill: "none", viewBox: "0 0 24 24", "stroke-width": "1.5", stroke: "currentColor"}
         |> Map.merge(assigns[:rest] || %{})
     assign(assigns, paths: content, rest: rest) |> Svg.icon()
   end
-
 
   @doc "Renders the `academic-cap` icon"
   attr :rest,  :global, doc: "HTML attributes for the svg container"

@@ -1,17 +1,17 @@
 defmodule Heroicon do
   def icon(assigns) do
-    {icon, assigns} = Map.pop!(assigns, :type)
-    {type, assigns} = Map.pop!(assigns, :style)
+    {icon,  assigns} = Map.pop!(assigns, :type)
+    {style, assigns} = Map.pop!(assigns, :style)
     icon = to_atom(icon)
     mod  =
-      case type do
+      case style do
         "solid"   -> Heroicons.Solid
         "outline" -> Heroicons.Outline
         "mini"    -> Heroicons.Mini
       end
 
     :erlang.function_exported(mod, icon, 1) ||
-      raise ArgumentError, message: "Invalid Hero icon '#{icon}'"
+      raise ArgumentError, message: "Invalid Hero icon type '#{icon}'"
 
     apply(mod, icon, [assigns])
   end

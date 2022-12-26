@@ -22,7 +22,8 @@ defmodule Heroiconex.MixProject do
     [
       {:phoenix_live_view, "~> 0.18.3"},
       {:floki,             "~> 0.34", runtime: false, only: :dev},
-      {:simplehttp,        "~> 0.5",  runtime: false, only: :dev},
+      {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git", runtime: false, only: [:dev, :test]},
+      #{:simplehttp,        "~> 0.5",  runtime: false, only: :dev},
       {:jason,             "~> 1.0",  funtime: false, only: [:dev, :test]},
     ]
   end
@@ -46,7 +47,8 @@ defmodule Mix.Tasks.Compile.Generate do
       zipurl = Jason.decode!(release.body)["tarball_url"]
       vsn    = Regex.replace(~r|.*/v([\d\.]+)$|, zipurl, "\\1")
       IO.puts("URL: #{zipurl}")
-      {:ok, :saved_to_file} = SimpleHttp.get(zipurl, [ssl: [verify: :verify_none], headers: %{"User-Agent" => "Mozilla"}, stream: @archive])
+      {:ok, %{body: :saved_to_file}} =
+        SimpleHttp.get(zipurl, [ssl: [verify: :verify_none], headers: %{"User-Agent" => "Mozilla"}, stream: @archive])
       {:ok, data} = :erl_tar.extract(@archive |> to_charlist, [:compressed, :memory])
 
       build_files(data)
