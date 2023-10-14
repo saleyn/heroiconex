@@ -18,8 +18,8 @@ defmodule Heroicons.CodegenTest do
   end
 
   test "Icon test" do
-    assert Phoenix.Template.render_to_string(Render, "render1", "html", %{}) =~ "<svg aria-hidden=\"true\" class=\"h-10 w-10\""
-    assert Phoenix.Template.render_to_string(Render, "render2", "html", %{}) =~ "<svg aria-hidden=\"true\" fill=\"currentColor\""
+    assert Phoenix.Template.render_to_string(Render, "render1", "html", %{}) =~ ~r"<svg class=\"h-10 w-10\" aria-hidden=\"true\""
+    assert Phoenix.Template.render_to_string(Render, "render2", "html", %{}) =~ ~r"<svg aria-hidden=\"true\" fill=\"currentColor\""
   end
 
 end
