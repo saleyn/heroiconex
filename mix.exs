@@ -10,6 +10,7 @@ defmodule Heroiconex.MixProject do
       compilers:       Mix.compilers ++ [:generate],
       deps:            deps(),
       package:         package(),
+      docs:            docs(),
     ]
   end
 
@@ -42,6 +43,13 @@ defmodule Heroiconex.MixProject do
         "GitHub"   => "https://github.com/saleyn/heroiconex",
         "Docs"     => "https://hex.pm/packages/heroiconex",
       }
+    ]
+  end
+
+  defp docs do
+    [
+      main:   "readme",
+      extras: ["README.md", "LICENSE"],
     ]
   end
 end
