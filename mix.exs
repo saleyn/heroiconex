@@ -22,7 +22,7 @@ defmodule Heroiconex.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix_live_view, "~> 0.18.3"},
+      {:phoenix_live_view, "~> 0.20"},
       {:floki,             "~> 0.34",  runtime: false, only: :dev},
       {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git", runtime: false, only: [:dev, :test]},
       #{:simplehttp,        "~> 0.5",  runtime: false, only: :dev},
