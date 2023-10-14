@@ -22,10 +22,11 @@ defmodule Heroiconex.MixProject do
   defp deps do
     [
       {:phoenix_live_view, "~> 0.18.3"},
-      {:floki,             "~> 0.34", runtime: false, only: :dev},
+      {:floki,             "~> 0.34",  runtime: false, only: :dev},
       {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git", runtime: false, only: [:dev, :test]},
       #{:simplehttp,        "~> 0.5",  runtime: false, only: :dev},
-      {:jason,             "~> 1.0",  funtime: false, only: [:dev, :test]},
+      {:jason,             "~> 1.0",   runtime: false, only: [:dev, :test]},
+      {:ex_doc,            ">= 0.0.0", runtime: false, only: :dev}
     ]
   end
 
