@@ -9,6 +9,7 @@ defmodule Heroiconex.MixProject do
       start_permanent: Mix.env() == :prod,
       compilers:       Mix.compilers ++ [:generate],
       deps:            deps(),
+      package:         package(),
     ]
   end
 
@@ -25,6 +26,21 @@ defmodule Heroiconex.MixProject do
       {:simplehttp,   git: "https://github.com/saleyn/simplehttp.git", runtime: false, only: [:dev, :test]},
       #{:simplehttp,        "~> 0.5",  runtime: false, only: :dev},
       {:jason,             "~> 1.0",  funtime: false, only: [:dev, :test]},
+    ]
+  end
+
+  defp package do
+    # These are the default files included in the package
+    [
+      name:        :heroiconex,
+      description: "Heroicons component library",
+      files:       ["lib", "config", "mix.exs", "README*"],
+      maintainers: ["Serge Aleynikov"],
+      licenses:    ["MIT"],
+      links:       %{
+        "GitHub"   => "https://github.com/saleyn/heroiconex",
+        "Docs"     => "https://hex.pm/packages/heroiconex",
+      }
     ]
   end
 end
