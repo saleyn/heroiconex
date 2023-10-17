@@ -9,15 +9,15 @@ compile: deps
 run:
 	iex -S mix run
 
-test:
+test docs:
 	mix $@
 
 generate: clean compile
 
 clean:
-	rm -fr lib/{solid,outline,mini}.ex _build/lib/heroiconex
+	rm -fr lib/{solid,outline,mini,icon}.ex _build/lib/heroiconex
 
 distclean: clean
 	rm -fr _build deps
 
-.PHONY: update compile test
+.PHONY: update compile test doc

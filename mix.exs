@@ -4,7 +4,7 @@ defmodule Heroiconex.MixProject do
   def project do
     [
       app:             :heroiconex,
-      version:         "2.0.19",
+      version:         "2.0.18",
       elixir:          "~> 1.14",
       start_permanent: Mix.env() == :prod,
       compilers:       Mix.compilers ++ [:generate],
@@ -96,6 +96,15 @@ defmodule Mix.Tasks.Compile.Generate do
       end
     end)
     |> Enum.reverse
+    |> tap(fn list ->
+      list
+      |> Enum.reduce(MapSet.new(), fn({_, v, _}, a) -> MapSet.put(a, v) end)
+      |> MapSet.to_list()
+      |> :lists.sort()
+      |> then(fn icons ->
+        Mix.Generator.copy_template("templates/icon.exs", "lib/icon.ex", %{icons: icons}, force: true)
+      end) 
+    end)
     |> Enum.group_by(fn {s, _, _} -> s end, fn {_, name, content} -> {name, content} end)
     |> Enum.each(fn {type, icons} ->
       dst = "lib/#{type}.ex"
@@ -103,6 +112,7 @@ defmodule Mix.Tasks.Compile.Generate do
 
       [{_, _}] = Code.compile_file(dst)
     end)
+    [{_, _}] = Code.compile_file("lib/icon.ex")
   end
 
   defp replace_vsn(vsn) do
